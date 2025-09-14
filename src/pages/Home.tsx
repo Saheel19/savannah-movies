@@ -16,9 +16,22 @@ export default function Home() {
   return (
     <div>
       <h2>Popular Movies</h2>
-      <ul>
+      <ul
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: "16px",
+        }}
+      >
         {movies.map((movie: any) => (
-          <li key={movie.id}>{movie.title}</li>
+          <li key={movie.id} style={{ listStyle: "none", textAlign: "center" }}>
+            <img
+              src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+              alt={movie.title}
+              style={{ borderRadius: "8px", width: "50%" }}
+            />
+            <p>{movie.title}</p>
+          </li>
         ))}
       </ul>
     </div>
