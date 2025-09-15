@@ -3,6 +3,7 @@ import { movieService } from "./_services"
 
 export const movieActions = {
   getPopularMovies,
+  getTrendingMovies,
 }
 
 /**
@@ -14,7 +15,7 @@ export function getPopularMovies(page = 1) {
 
     movieService.getPopular(page).then(
       (data) => {
-        dispatch(success(data.results)) // TMDB returns { results: [] }
+        dispatch(success(data.results))
         return data
       },
       (error) => {
@@ -31,5 +32,34 @@ export function getPopularMovies(page = 1) {
   }
   function failure(error: any) {
     return { type: tmdbConstants.GET_POPULAR_FAILURE, error }
+  }
+}
+
+/**
+ * Get Trending Movies
+ */
+export function getTrendingMovies() {
+  return (dispatch: any) => {
+    dispatch(request())
+
+    movieService.getTrending().then(
+      (data) => {
+        dispatch(success(data.results))
+        return data
+      },
+      (error) => {
+        dispatch(failure(error))
+      }
+    )
+  }
+
+  function request() {
+    return { type: tmdbConstants.GET_TRENDING_REQUEST }
+  }
+  function success(data: any) {
+    return { type: tmdbConstants.GET_TRENDING_SUCCESS, data }
+  }
+  function failure(error: any) {
+    return { type: tmdbConstants.GET_TRENDING_FAILURE, error }
   }
 }

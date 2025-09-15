@@ -1,0 +1,19 @@
+.home-page {
+  background-color: #000000;
+
+  .movie-section {
+    margin-bottom: 3rem;
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 3rem;
+
+      h6 {
+        margin-left: 0.5rem;
+        font-weight: 600;
+        color: #ffffff;
+      }
+    }
+  }
+}
