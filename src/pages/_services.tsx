@@ -6,6 +6,7 @@ const baseUrl =
 
 export const movieService = {
   getPopular,
+  getTrending,
 }
 
 /**
@@ -23,9 +24,29 @@ const handleResponse = (res: any) => {
 
 /**
  * Get popular movies
+ * @param page
  */
 function getPopular(page = 1) {
   return axios
-    .get(`${baseUrl}/movie/popular?api_key=${apiKey}&page=${page}`)
+    .get(`${baseUrl}/movie/popular`, {
+      params: {
+        page,
+        api_key: apiKey,
+      },
+    })
+    .then(handleResponse)
+}
+
+/**
+ * Get trending movies
+ * @param time_window
+ */
+function getTrending(time_window = "day") {
+  return axios
+    .get(`${baseUrl}/trending/movie/${time_window}`, {
+      params: {
+        api_key: apiKey,
+      },
+    })
     .then(handleResponse)
 }
