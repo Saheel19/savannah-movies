@@ -4,6 +4,10 @@ import { movieService } from "./_services"
 export const movieActions = {
   getPopularMovies,
   getTrendingMovies,
+  getMovieDetails,
+  getMovieCredits,
+  getMovieVideos,
+  getSimilarMovies,
 }
 
 /**
@@ -61,5 +65,118 @@ export function getTrendingMovies() {
   }
   function failure(error: any) {
     return { type: tmdbConstants.GET_TRENDING_FAILURE, error }
+  }
+}
+
+/**
+ * Get Movie Details by ID
+ */
+
+export function getMovieDetails(id: string) {
+  return (dispatch: any) => {
+    dispatch(request())
+
+    movieService.fetchMovieDetails(id).then(
+      (data) => {
+        dispatch(success(data))
+        return data
+      },
+      (error) => {
+        dispatch(failure(error))
+      }
+    )
+  }
+
+  function request() {
+    return { type: tmdbConstants.GET_MOVIE_DETAILS_REQUEST }
+  }
+  function success(data: any) {
+    return { type: tmdbConstants.GET_MOVIE_DETAILS_SUCCESS, data }
+  }
+  function failure(error: any) {
+    return { type: tmdbConstants.GET_MOVIE_DETAILS_FAILURE, error }
+  }
+}
+
+/**
+ * Get Movie Credits by ID
+ */
+export function getMovieCredits(id: string) {
+  return (dispatch: any) => {
+    dispatch(request())
+    movieService.fetchMovieCredits(id).then(
+      (data) => {
+        dispatch(success(data))
+        return data
+      },
+      (error) => {
+        dispatch(failure(error))
+      }
+    )
+  }
+
+  function request() {
+    return { type: tmdbConstants.GET_MOVIE_CREDITS_REQUEST }
+  }
+  function success(data: any) {
+    return { type: tmdbConstants.GET_MOVIE_CREDITS_SUCCESS, data }
+  }
+  function failure(error: any) {
+    return { type: tmdbConstants.GET_MOVIE_CREDITS_FAILURE, error }
+  }
+}
+
+/**
+ * Get Movie Videos by ID
+ */
+export function getMovieVideos(id: string) {
+  return (dispatch: any) => {
+    dispatch(request())
+    movieService.fetchMovieVideos(id).then(
+      (data) => {
+        dispatch(success(data.results))
+        return data
+      },
+      (error) => {
+        dispatch(failure(error))
+      }
+    )
+  }
+
+  function request() {
+    return { type: tmdbConstants.GET_MOVIE_VIDEOS_REQUEST }
+  }
+  function success(data: any) {
+    return { type: tmdbConstants.GET_MOVIE_VIDEOS_SUCCESS, data }
+  }
+  function failure(error: any) {
+    return { type: tmdbConstants.GET_MOVIE_VIDEOS_FAILURE, error }
+  }
+}
+/**
+ * Get Similar Movies by ID
+ */
+export function getSimilarMovies(id: string) {
+  return (dispatch: any) => {
+    dispatch(request())
+    movieService.fetchSimilarMovies(id).then(
+      (data) => {
+        dispatch(success(data.results))
+        return data
+      },
+      (error) => {
+        dispatch(failure(error))
+      }
+    )
+  }
+
+  function request() {
+    return { type: tmdbConstants.GET_SIMILAR_MOVIES_REQUEST }
+  }
+  function success(data: any) {
+    return { type: tmdbConstants.GET_SIMILAR_MOVIES_SUCCESS, data }
+  }
+  function failure(error: any) {
+    return { type: tmdbConstants.GET_SIMILAR_MOVIES_FAILURE, error }
   }
 }

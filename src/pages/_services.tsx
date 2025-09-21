@@ -7,6 +7,10 @@ const baseUrl =
 export const movieService = {
   getPopular,
   getTrending,
+  fetchMovieDetails,
+  fetchMovieCredits,
+  fetchMovieVideos,
+  fetchSimilarMovies,
 }
 
 /**
@@ -44,6 +48,62 @@ function getPopular(page = 1) {
 function getTrending(time_window = "day") {
   return axios
     .get(`${baseUrl}/trending/movie/${time_window}`, {
+      params: {
+        api_key: apiKey,
+      },
+    })
+    .then(handleResponse)
+}
+
+/**
+ * Fetch movie details by ID
+ * @param id
+ */
+function fetchMovieDetails(id: string) {
+  return axios
+    .get(`${baseUrl}/movie/${id}`, {
+      params: {
+        api_key: apiKey,
+      },
+    })
+    .then(handleResponse)
+}
+
+/**
+ * Fetch movie credits by ID
+ * @param id
+ */
+function fetchMovieCredits(id: string) {
+  return axios
+    .get(`${baseUrl}/movie/${id}/credits`, {
+      params: {
+        api_key: apiKey,
+      },
+    })
+    .then(handleResponse)
+}
+
+/**
+ * Fetch movie videos by ID
+ * @param id
+ */
+function fetchMovieVideos(id: string) {
+  return axios
+    .get(`${baseUrl}/movie/${id}/videos`, {
+      params: {
+        api_key: apiKey,
+      },
+    })
+    .then(handleResponse)
+}
+
+/**
+ * Fetch similar movies by ID
+ * @param id
+ */
+function fetchSimilarMovies(id: string) {
+  return axios
+    .get(`${baseUrl}/movie/${id}/similar`, {
       params: {
         api_key: apiKey,
       },

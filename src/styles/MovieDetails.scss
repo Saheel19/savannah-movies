@@ -1,0 +1,147 @@
+.movie-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background-color: #000000;
+  color: #fff;
+}
+
+.poster-sidebar {
+  flex: 0 0 250px;
+  img {
+    width: 100%;
+    border-radius: 8px;
+  }
+}
+
+.main-content {
+  flex: 1;
+  max-width: calc(100vw - 300px);
+}
+
+.movie-title {
+  font-size: 2rem;
+  color: #fff;
+}
+
+.movie-tagline {
+  font-size: 1.2rem;
+  color: #ccc;
+  font-style: italic;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .rating-item {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+
+    &.star-rating {
+      gap: 5px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    &.genre {
+      font-size: 1rem;
+      color: #bbb;
+      background-color: transparent;
+      padding: 2px 20px;
+      border: 2px solid #555;
+    }
+    &.year,
+    &.runtime {
+      font-size: 1rem;
+      color: #bbb;
+      background-color: transparent;
+      padding: 2px 20px;
+      gap: 5px;
+    }
+  }
+}
+
+.overview span.overview-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+}
+
+.overview {
+  color: #ddd;
+}
+
+.info-card {
+  background: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 90%;
+}
+
+.trailer {
+  margin-top: 15px;
+}
+
+.trailer-player {
+  margin-top: 10px;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 560px;
+
+  iframe {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+.stats-section {
+  margin-top: 15px;
+
+  .info-card {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 90%;
+  }
+}
+
+.similar-movies {
+  margin-top: 15px;
+}
+
+.cast {
+  margin-top: 15px;
+
+  .cast-card {
+    background: #2a2a2a;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 200px;
+    max-width: 200px;
+    flex: 0 0 200px;
+    box-sizing: border-box;
+  }
+}
+
+.card-text {
+  color: #fff;
+  margin-top: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
