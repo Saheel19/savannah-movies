@@ -6,7 +6,6 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
 import ScheduleIcon from "@mui/icons-material/Schedule"
 import StarIcon from "@mui/icons-material/Star"
 import { movieActions } from "./_actions"
-import Navigation from "../components/Navigation"
 import "../styles/MovieDetails.scss"
 import "../styles/MovieCard.scss"
 
@@ -174,38 +173,6 @@ const MovieDetails = () => {
         </Box>
       </Box>
 
-      {/* Similar Movies Section */}
-      {similarMovies?.length > 0 && (
-        <Box mt={4} className="similar-movies">
-          <Typography variant="h6">Similar Movies:</Typography>
-          <Box className="movie-section">
-            <Box className="movies-row">
-              {similarMovies.slice(0, 3).map((similar: any) => (
-                <Box
-                  key={similar.id}
-                  className="movie-card"
-                  onClick={() => handleMovieClick(similar.id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <img
-                    src={
-                      similar.poster_path
-                        ? `https://image.tmdb.org/t/p/w400${similar.poster_path}`
-                        : "/placeholder-similar.png"
-                    }
-                    alt={similar.title}
-                    style={{ width: "100%", borderRadius: 8 }}
-                  />
-                  <Typography variant="body2" className="card-text">
-                    {similar.title}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        </Box>
-      )}
-
       {/* Cast Section */}
       {credits?.cast?.length > 0 && (
         <Box mt={4} className="cast">
@@ -232,6 +199,38 @@ const MovieDetails = () => {
                     style={{ fontStyle: "italic" }}
                   >
                     as {actor.character}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+      )}
+
+      {/* Similar Movies Section */}
+      {similarMovies?.length > 0 && (
+        <Box mt={4} className="similar-movies">
+          <Typography variant="h6">Similar Movies:</Typography>
+          <Box className="movie-section">
+            <Box className="movies-row">
+              {similarMovies.slice(0, 3).map((similar: any) => (
+                <Box
+                  key={similar.id}
+                  className="movie-card"
+                  onClick={() => handleMovieClick(similar.id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <img
+                    src={
+                      similar.poster_path
+                        ? `https://image.tmdb.org/t/p/w400${similar.poster_path}`
+                        : "/placeholder-similar.png"
+                    }
+                    alt={similar.title}
+                    style={{ width: "100%", borderRadius: 8 }}
+                  />
+                  <Typography variant="body2" className="card-text">
+                    {similar.title}
                   </Typography>
                 </Box>
               ))}

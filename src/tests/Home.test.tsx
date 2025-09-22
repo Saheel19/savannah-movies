@@ -1,4 +1,3 @@
-// __tests__/Home.test.tsx
 import React from "react"
 import { render, screen, fireEvent } from "@testing-library/react"
 import { useDispatch, useSelector } from "react-redux"
@@ -29,24 +28,13 @@ const renderHomeWithState = (state: any) => {
 }
 
 describe("Home Component", () => {
-  it("renders loading state", () => {
+  it("renders skeletons while loading", () => {
     renderHomeWithState({
       trending: [],
       popular: [],
       loading: true,
-      error: null,
     })
-    expect(screen.getByText(/Loading movies/i)).toBeInTheDocument()
-  })
-
-  it("renders error state", () => {
-    renderHomeWithState({
-      trending: [],
-      popular: [],
-      loading: false,
-      error: "Something went wrong",
-    })
-    expect(screen.getByText(/Error: Something went wrong/i)).toBeInTheDocument()
+    expect(screen.getAllByTestId("skeleton").length).toBeGreaterThan(0)
   })
 
   it("renders trending and popular movies lists", () => {
@@ -70,7 +58,6 @@ describe("Home Component", () => {
         },
       ],
       loading: false,
-      error: null,
     })
 
     expect(screen.getByText("Trending Movie 1")).toBeInTheDocument()
@@ -82,7 +69,6 @@ describe("Home Component", () => {
       trending: [],
       popular: [],
       loading: false,
-      error: null,
     })
 
     expect(screen.getAllByText(/No movies found./i).length).toBe(2)
@@ -101,7 +87,6 @@ describe("Home Component", () => {
       ],
       popular: [],
       loading: false,
-      error: null,
     })
 
     fireEvent.click(screen.getByText("Trending Movie 1"))

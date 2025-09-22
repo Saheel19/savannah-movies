@@ -32,7 +32,7 @@ const cardVariants = {
 
 export default function Home() {
   const dispatch = useDispatch()
-  const { trending, popular, loading, error } = useSelector(
+  const { trending, popular, loading } = useSelector(
     (state: any) => state.movies
   )
 
@@ -43,6 +43,7 @@ export default function Home() {
 
   // Hero slider auto-play
   useEffect(() => {
+    if (typeof window === "undefined") return
     if (popular && popular.length > 0) {
       const interval = setInterval(() => {
         setCurrentSlide((prev) => (prev + 1) % Math.min(popular.length, 5))
@@ -192,6 +193,7 @@ export default function Home() {
                   width={180}
                   height={270}
                   className="loading-skeleton"
+                  data-testid="skeleton"
                 />
               ))}
             </Box>
