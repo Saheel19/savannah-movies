@@ -31,6 +31,66 @@ describe("movieService", () => {
     })
   })
 
+  describe("fetchMovieDetails", () => {
+    it("should fetch movie details by ID", async () => {
+      const mockData = { id: 3, title: "Detail Movie" }
+      mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
+
+      const result = await movieService.fetchMovieDetails("3")
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect.stringContaining("/movie/3"),
+        expect.any(Object)
+      )
+      expect(result).toEqual(mockData)
+    })
+  })
+
+  describe("fetchMovieCredits", () => {
+    it("should fetch movie credits by ID", async () => {
+      const mockData = { cast: [{ id: 10, name: "Actor" }] }
+      mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
+
+      const result = await movieService.fetchMovieCredits("3")
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect.stringContaining("/movie/3/credits"),
+        expect.any(Object)
+      )
+      expect(result).toEqual(mockData)
+    })
+  })
+
+  describe("fetchMovieVideos", () => {
+    it("should fetch movie videos by ID", async () => {
+      const mockData = { results: [{ id: "abc", key: "trailer" }] }
+      mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
+
+      const result = await movieService.fetchMovieVideos("3")
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect.stringContaining("/movie/3/videos"),
+        expect.any(Object)
+      )
+      expect(result).toEqual(mockData)
+    })
+  })
+
+  describe("fetchSimilarMovies", () => {
+    it("should fetch similar movies by ID", async () => {
+      const mockData = { results: [{ id: 20, title: "Similar Movie" }] }
+      mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
+
+      const result = await movieService.fetchSimilarMovies("3")
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        expect.stringContaining("/movie/3/similar"),
+        expect.any(Object)
+      )
+      expect(result).toEqual(mockData)
+    })
+  })
+
   describe("error handling", () => {
     it("should handle API errors", async () => {
       const mockError = {

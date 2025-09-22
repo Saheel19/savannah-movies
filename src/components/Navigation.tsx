@@ -1,29 +1,23 @@
 import React from "react"
-import { motion } from "framer-motion"
-import { Box, Button, InputBase, AppBar, Toolbar } from "@mui/material"
 import {
-  navBarStyles,
-  containerStyles,
-  innerStyles,
-  logoStyles,
-  navButtonStyles,
-  searchWrapperStyles,
-  searchInputStyles,
-  searchIconStyles,
-} from "../styles/Navigation"
-
-type PageType =
-  | "popular"
-  | "top_rated"
-  | "upcoming"
-  | "now_playing"
-  | "search"
-  | "movie_detail"
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  TextField,
+  InputAdornment,
+  Button,
+  IconButton,
+} from "@mui/material"
+import SearchIcon from "@mui/icons-material/Search"
+import MovieIcon from "@mui/icons-material/Movie"
+import PersonIcon from "@mui/icons-material/Person"
+import "../styles/Navigation.scss"
 
 interface NavigationProps {
-  currentPage: PageType
+  currentPage: string
   searchQuery: string
-  onNavClick: (pageType: PageType) => void
+  onNavClick: (page: string) => void
   onSearch: (query: string) => void
 }
 
@@ -32,67 +26,71 @@ const Navigation: React.FC<NavigationProps> = ({
   searchQuery,
   onNavClick,
   onSearch,
-}) => (
-  <AppBar position="sticky" sx={navBarStyles}>
-    <Toolbar sx={containerStyles}>
-      <Box sx={innerStyles}>
-        {/* Logo */}
-        <motion.div whileHover={{ scale: 1.05 }}>
-          <Box component="h1" sx={logoStyles}>
-            MovieDB
-          </Box>
-        </motion.div>
-
-        {/* Nav buttons */}
-        <Box sx={{ display: { xs: "none", md: "flex" }, ml: 4, gap: 2 }}>
-          {[
-            { key: "popular", label: "Popular" },
-            { key: "top_rated", label: "Top Rated" },
-            { key: "upcoming", label: "Upcoming" },
-            { key: "now_playing", label: "Now Playing" },
-          ].map(({ key, label }) => (
-            <motion.div
-              key={key}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                sx={navButtonStyles(currentPage === key)}
-                onClick={() => onNavClick(key as PageType)}
-              >
-                {label}
-              </Button>
-            </motion.div>
-          ))}
+}) => {
+  return (
+    <AppBar className="navigation-bar">
+      <Toolbar className="navigation-toolbar">
+        <Box className="logo-container">
+          <MovieIcon className="logo-icon" />
+          <Typography className="logo-text">MovieDB</Typography>
         </Box>
 
-        {/* Search */}
-        <Box sx={searchWrapperStyles}>
-          <InputBase
+        <Box className="nav-buttons-container">
+          <Button
+            className={`nav-button ${currentPage === "home" ? "active" : ""}`}
+            onClick={() => onNavClick("home")}
+          >
+            Home
+          </Button>
+          <Button
+            className={`nav-button ${currentPage === "popular" ? "active" : ""}`}
+            onClick={() => onNavClick("popular")}
+          >
+            Popular
+          </Button>
+          <Button
+            className={`nav-button ${currentPage === "top-rated" ? "active" : ""}`}
+            onClick={() => onNavClick("top-rated")}
+          >
+            Top Rated
+          </Button>
+          <Button
+            className={`nav-button ${currentPage === "upcoming" ? "active" : ""}`}
+            onClick={() => onNavClick("upcoming")}
+          >
+            Upcoming
+          </Button>
+          <Button
+            className={`nav-button ${currentPage === "now-playing" ? "active" : ""}`}
+            onClick={() => onNavClick("now-playing")}
+          >
+            Now Playing
+          </Button>
+        </Box>
+
+        <Box className="search-container">
+          <TextField
+            className="search-field"
             placeholder="Search movies..."
             value={searchQuery}
             onChange={(e) => onSearch(e.target.value)}
-            sx={searchInputStyles}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            variant="outlined"
+            size="small"
           />
-          <Box
-            component="svg"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            sx={searchIconStyles}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              fill="none"
-              stroke="currentColor"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </Box>
+          <IconButton className="login-button">
+            <PersonIcon />
+          </IconButton>
         </Box>
-      </Box>
-    </Toolbar>
-  </AppBar>
-)
+      </Toolbar>
+    </AppBar>
+  )
+}
 
 export default Navigation
