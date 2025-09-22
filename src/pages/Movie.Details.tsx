@@ -1,11 +1,12 @@
 import React, { useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
-import { Box, Typography, CircularProgress, Rating } from "@mui/material"
+import { Box, Typography, CircularProgress } from "@mui/material"
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday"
 import ScheduleIcon from "@mui/icons-material/Schedule"
 import StarIcon from "@mui/icons-material/Star"
 import { movieActions } from "./_actions"
+import Navigation from "../components/Navigation"
 import "../styles/MovieDetails.scss"
 import "../styles/MovieCard.scss"
 
