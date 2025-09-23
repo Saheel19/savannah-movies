@@ -1,6 +1,5 @@
 .home-page {
   min-height: 100vh;
-
   padding-top: 20px;
   color: #ffffff;
 
@@ -195,11 +194,10 @@
     }
 
     .section-header {
-      display: flex;
       align-items: center;
-      gap: 1rem;
       margin-bottom: 2rem;
       padding-left: 0.5rem;
+      gap: 1rem;
 
       .section-icon {
         display: flex;
@@ -219,15 +217,31 @@
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
       }
 
-      .spotlight-badge {
+      .show-more-btn {
+        margin-left: auto; // push to far right
         background: linear-gradient(45deg, #8b45c5, #ff6b9d);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 15px;
-        font-size: 0.8rem;
-        font-weight: bold;
-        margin-left: auto;
-        white-space: nowrap;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        border-radius: 30px !important;
+        padding: 10px 20px !important;
+        text-transform: none !important;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(139, 69, 197, 0.4);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+
+        &:hover {
+          background: linear-gradient(45deg, #7a3eb0, #e55a8a);
+          transform: translateY(-3px) scale(1.05);
+          box-shadow: 0 6px 20px rgba(139, 69, 197, 0.6);
+
+          svg {
+            transform: translateX(4px); // arrow animation
+            transition: transform 0.3s ease;
+          }
+        }
       }
     }
 

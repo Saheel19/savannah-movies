@@ -3,6 +3,7 @@ import { movieService } from "./_services"
 
 export const movieActions = {
   getPopularMovies,
+  getTopRated,
   getTrendingMovies,
   getMovieDetails,
   getMovieCredits,
@@ -19,7 +20,10 @@ export function getPopularMovies(page = 1) {
 
     movieService.getPopular(page).then(
       (data) => {
-        dispatch(success(data.results))
+        // send the entire response so reducer can extract movies + total_pages
+        dispatch(
+          success({ movies: data.results, totalPages: data.total_pages })
+        )
         return data
       },
       (error) => {
@@ -40,15 +44,49 @@ export function getPopularMovies(page = 1) {
 }
 
 /**
- * Get Trending Movies
+ * Get Popular Movies
  */
-export function getTrendingMovies() {
+export function getTopRated(page = 1) {
   return (dispatch: any) => {
     dispatch(request())
 
-    movieService.getTrending().then(
+    movieService.getTopRated(page).then(
       (data) => {
-        dispatch(success(data.results))
+        // send the entire response so reducer can extract movies + total_pages
+        dispatch(
+          success({ movies: data.results, totalPages: data.total_pages })
+        )
+        return data
+      },
+      (error) => {
+        dispatch(failure(error))
+      }
+    )
+  }
+
+  function request() {
+    return { type: tmdbConstants.GET_TOP_RATED_REQUEST }
+  }
+  function success(data: any) {
+    return { type: tmdbConstants.GET_TOP_RATED_SUCCESS, data }
+  }
+  function failure(error: any) {
+    return { type: tmdbConstants.GET_TOP_RATED_FAILURE, error }
+  }
+}
+
+/**
+ * Get Trending Movies
+ */
+export function getTrendingMovies(page = 1, time_window = "day") {
+  return (dispatch: any) => {
+    dispatch(request())
+
+    movieService.getTrending(time_window).then(
+      (data) => {
+        dispatch(
+          success({ movies: data.results, totalPages: data.total_pages ?? 0 })
+        )
         return data
       },
       (error) => {
@@ -76,7 +114,7 @@ export function getMovieDetails(id: string) {
   return (dispatch: any) => {
     dispatch(request())
 
-    movieService.fetchMovieDetails(id).then(
+    movieService.getMovieDetails(id).then(
       (data) => {
         dispatch(success(data))
         return data
@@ -104,7 +142,7 @@ export function getMovieDetails(id: string) {
 export function getMovieCredits(id: string) {
   return (dispatch: any) => {
     dispatch(request())
-    movieService.fetchMovieCredits(id).then(
+    movieService.getMovieCredits(id).then(
       (data) => {
         dispatch(success(data))
         return data
@@ -132,7 +170,7 @@ export function getMovieCredits(id: string) {
 export function getMovieVideos(id: string) {
   return (dispatch: any) => {
     dispatch(request())
-    movieService.fetchMovieVideos(id).then(
+    movieService.getMovieVideos(id).then(
       (data) => {
         dispatch(success(data.results))
         return data
@@ -159,7 +197,7 @@ export function getMovieVideos(id: string) {
 export function getSimilarMovies(id: string) {
   return (dispatch: any) => {
     dispatch(request())
-    movieService.fetchSimilarMovies(id).then(
+    movieService.getSimilarMovies(id).then(
       (data) => {
         dispatch(success(data.results))
         return data

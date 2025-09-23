@@ -1,9 +1,15 @@
 import { tmdbConstants } from "./_constants"
 
+interface MoviesList {
+  movies: any[]
+  totalPages: number
+}
+
 interface MoviesState {
   loading: boolean
-  trending: any[]
-  popular: any[]
+  trending: MoviesList
+  popular: MoviesList
+  top_rated: MoviesList
   movie: any | null
   credits: any | null
   videos: any | null
@@ -13,8 +19,9 @@ interface MoviesState {
 
 const initialState: MoviesState = {
   loading: false,
-  trending: [],
-  popular: [],
+  trending: { movies: [], totalPages: 0 },
+  popular: { movies: [], totalPages: 0 },
+  top_rated: { movies: [], totalPages: 0 },
   movie: null,
   credits: null,
   videos: null,
@@ -31,7 +38,10 @@ export function movieReducer(state = initialState, action: any): MoviesState {
       return {
         ...state,
         loading: false,
-        popular: action.data.results ?? action.data,
+        popular: {
+          movies: action.data.movies,
+          totalPages: action.data.totalPages,
+        },
       }
     case tmdbConstants.GET_POPULAR_FAILURE:
       return { ...state, loading: false, error: action.error }
@@ -43,8 +53,27 @@ export function movieReducer(state = initialState, action: any): MoviesState {
       return {
         ...state,
         loading: false,
-        trending: action.data.results ?? action.data,
+        trending: {
+          movies: action.data.movies,
+          totalPages: action.data.totalPages,
+        },
       }
+
+    // TOP RATED
+    case tmdbConstants.GET_TOP_RATED_REQUEST:
+      return { ...state, loading: true, error: null }
+    case tmdbConstants.GET_TOP_RATED_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        top_rated: {
+          movies: action.data.movies,
+          totalPages: action.data.totalPages,
+        },
+      }
+    case tmdbConstants.GET_TOP_RATED_FAILURE:
+      return { ...state, loading: false, error: action.error }
+
     case tmdbConstants.GET_TRENDING_FAILURE:
       return { ...state, loading: false, error: action.error }
 

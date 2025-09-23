@@ -8,7 +8,7 @@ describe("movieService", () => {
   afterEach(() => jest.clearAllMocks())
 
   describe("getPopular", () => {
-    it("should fetch popular movies", async () => {
+    it("should get popular movies", async () => {
       const mockData = { results: [{ id: 1, title: "Test Movie" }] }
       mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
 
@@ -20,7 +20,7 @@ describe("movieService", () => {
   })
 
   describe("getTrending", () => {
-    it("should fetch trending movies", async () => {
+    it("should get trending movies", async () => {
       const mockData = { results: [{ id: 2, title: "Trending Movie" }] }
       mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
 
@@ -31,12 +31,12 @@ describe("movieService", () => {
     })
   })
 
-  describe("fetchMovieDetails", () => {
-    it("should fetch movie details by ID", async () => {
+  describe("getMovieDetails", () => {
+    it("should get movie details by ID", async () => {
       const mockData = { id: 3, title: "Detail Movie" }
       mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
 
-      const result = await movieService.fetchMovieDetails("3")
+      const result = await movieService.getMovieDetails("3")
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         expect.stringContaining("/movie/3"),
@@ -46,12 +46,12 @@ describe("movieService", () => {
     })
   })
 
-  describe("fetchMovieCredits", () => {
-    it("should fetch movie credits by ID", async () => {
+  describe("getMovieCredits", () => {
+    it("should get movie credits by ID", async () => {
       const mockData = { cast: [{ id: 10, name: "Actor" }] }
       mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
 
-      const result = await movieService.fetchMovieCredits("3")
+      const result = await movieService.getMovieCredits("3")
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         expect.stringContaining("/movie/3/credits"),
@@ -61,12 +61,12 @@ describe("movieService", () => {
     })
   })
 
-  describe("fetchMovieVideos", () => {
-    it("should fetch movie videos by ID", async () => {
+  describe("getMovieVideos", () => {
+    it("should get movie videos by ID", async () => {
       const mockData = { results: [{ id: "abc", key: "trailer" }] }
       mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
 
-      const result = await movieService.fetchMovieVideos("3")
+      const result = await movieService.getMovieVideos("3")
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         expect.stringContaining("/movie/3/videos"),
@@ -76,12 +76,12 @@ describe("movieService", () => {
     })
   })
 
-  describe("fetchSimilarMovies", () => {
-    it("should fetch similar movies by ID", async () => {
+  describe("getSimilarMovies", () => {
+    it("should get similar movies by ID", async () => {
       const mockData = { results: [{ id: 20, title: "Similar Movie" }] }
       mockedAxios.get.mockResolvedValue({ status: 200, data: mockData })
 
-      const result = await movieService.fetchSimilarMovies("3")
+      const result = await movieService.getSimilarMovies("3")
 
       expect(mockedAxios.get).toHaveBeenCalledWith(
         expect.stringContaining("/movie/3/similar"),

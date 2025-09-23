@@ -54,18 +54,6 @@ const Navigation: React.FC<NavigationProps> = ({
           >
             Top Rated
           </Button>
-          <Button
-            className={`nav-button ${currentPage === "upcoming" ? "active" : ""}`}
-            onClick={() => onNavClick("upcoming")}
-          >
-            Upcoming
-          </Button>
-          <Button
-            className={`nav-button ${currentPage === "now-playing" ? "active" : ""}`}
-            onClick={() => onNavClick("now-playing")}
-          >
-            Now Playing
-          </Button>
         </Box>
 
         <Box className="search-container">
