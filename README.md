@@ -79,9 +79,10 @@ The Login page uses Firebase Authentication to manage:
 
 This project uses two main branches:
 
-- Development: Connected to the development deployment. link: https://savannah-movies-p7qrz6xou-saheels-projects-b7c3a8f7.vercel.app/
-- Production: Connected to the production deployment. link: https://savannah-movies-lz8wgc2yi-saheels-projects-b7c3a8f7.vercel.app/
-  Both branches are deployed using Vercel for seamless hosting and scaling.
+- Development: Connected to the development deployment. link: https://savannah-movies-ak02n9bqi-saheels-projects-b7c3a8f7.vercel.app/
+- Production: Connected to the production deployment. link: https://savannah-movies-g0bkowseo-saheels-projects-b7c3a8f7.vercel.app/
+
+Both branches are deployed using Vercel for seamless hosting and scaling.
 
 ## 💡 Additional Notes
 
