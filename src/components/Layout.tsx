@@ -1,42 +1,59 @@
-import React, { useState } from "react"
-import { Outlet, useNavigate, useLocation } from "react-router-dom"
+import React, { useState, useEffect, useCallback } from "react"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { useAppDispatch } from "../store/hooks"
 import Navigation from "./Navigation"
+import { searchMovies } from "pages/_actions"
+import debounce from "lodash/debounce"
 
 const Layout: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState("home")
   const [searchQuery, setSearchQuery] = useState("")
-  const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const location = useLocation()
+  const navigate = useNavigate()
 
-  // Derive current page from URL
-  const getCurrentPage = () => {
-    const path = location.pathname
-    if (path === "/") return "home"
-    if (path === "/movies/popular") return "popular"
-    if (path === "/movies/top_rated") return "top-rated"
-    if (path === "/movies/upcoming") return "upcoming"
-    if (path === "/movies/now_playing") return "now-playing"
-    return ""
-  }
+  const debouncedSearch = useCallback(
+    debounce((query: string) => {
+      if (query.trim() !== "") {
+        dispatch(searchMovies(query))
+      }
+    }, 500),
+    [dispatch]
+  )
 
-  const currentPage = getCurrentPage()
-
-  const handleNavClick = (page: string) => {
-    // Map page names to routes
-    const routesMap: Record<string, string> = {
-      home: "/",
-      popular: "/movies/popular",
-      "top-rated": "/movies/top_rated",
+  useEffect(() => {
+    if (searchQuery.trim() !== "") {
+      debouncedSearch(searchQuery)
     }
-    const path = routesMap[page]
-    if (path) navigate(path)
-  }
+  }, [searchQuery, debouncedSearch])
+
+  useEffect(() => {
+    if (location.pathname.includes("popular")) {
+      setCurrentPage("popular")
+    } else if (location.pathname.includes("top_rated")) {
+      setCurrentPage("top-rated")
+    } else if (location.pathname.includes("trending")) {
+      setCurrentPage("trending")
+    } else if (location.pathname === "/") {
+      setCurrentPage("home")
+    } else {
+      setCurrentPage("")
+    }
+  }, [location.pathname])
 
   return (
     <>
       <Navigation
         currentPage={currentPage}
         searchQuery={searchQuery}
-        onNavClick={handleNavClick}
+        onNavClick={(page) => {
+          setCurrentPage(page)
+          navigate(
+            page === "home"
+              ? "/"
+              : `/movies/${page === "top-rated" ? "top_rated" : page}`
+          )
+        }}
         onSearch={setSearchQuery}
       />
       <main style={{ paddingTop: "90px" }}>

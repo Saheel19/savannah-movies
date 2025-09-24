@@ -6,11 +6,11 @@ import { movieActions } from "./_actions"
 import { Box, Typography, Container, Skeleton, Button } from "@mui/material"
 import MovieIcon from "@mui/icons-material/Movie"
 import TrendingUpIcon from "@mui/icons-material/TrendingUp"
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import MovieCard from "../components/MovieCard"
 import MoviesModal from "../components/MoviesModal"
+import { RootState } from "store/store"
 
 import "../styles/Home.scss"
 
@@ -36,7 +36,7 @@ export default function Home() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { trending, popular, top_rated, loading } = useSelector(
-    (state: any) => state.movies
+    (state: RootState) => state.movies
   )
 
   const [favorites, setFavorites] = useState<Set<number>>(new Set())

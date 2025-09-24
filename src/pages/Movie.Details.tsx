@@ -46,8 +46,8 @@ const MovieDetails = () => {
   }
 
   const formatRuntime = (minutes: number) => {
-    const hrs = Math.floor(minutes / 60) // 156 / 60 = 2
-    const mins = minutes % 60 // 156 % 60 = 36
+    const hrs = Math.floor(minutes / 60)
+    const mins = minutes % 60
     return `${hrs}h ${mins}m`
   }
 

@@ -218,3 +218,32 @@ export function getSimilarMovies(id: string) {
     return { type: tmdbConstants.GET_SIMILAR_MOVIES_FAILURE, error }
   }
 }
+
+/**
+ * Search Movies by Query
+ */
+export function searchMovies(query: string) {
+  return (dispatch: any) => {
+    dispatch(request())
+
+    movieService.searchMovies(query).then(
+      (data) => {
+        dispatch(success(data.results))
+        return data
+      },
+      (error) => {
+        dispatch(failure(error))
+      }
+    )
+  }
+
+  function request() {
+    return { type: tmdbConstants.SEARCH_MOVIES_REQUEST }
+  }
+  function success(data: any) {
+    return { type: tmdbConstants.SEARCH_MOVIES_SUCCESS, data }
+  }
+  function failure(error: any) {
+    return { type: tmdbConstants.SEARCH_MOVIES_FAILURE, error }
+  }
+}

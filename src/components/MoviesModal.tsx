@@ -103,11 +103,12 @@ const MoviesModal = React.memo(
       if (autoPlayTrailer && movie && open) {
         handleTrailerClick()
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [autoPlayTrailer, movie, open])
 
     const handleFavoriteClick = useCallback(() => {
       if (onToggleFavorite && movie) onToggleFavorite(movie.id)
-    }, [onToggleFavorite, movie?.id])
+    }, [onToggleFavorite, movie])
 
     const formatDate = useCallback((dateString: string) => {
       if (!dateString) return "N/A"

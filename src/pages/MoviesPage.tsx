@@ -6,7 +6,6 @@ import {
   Box,
   Typography,
   Container,
-  Skeleton,
   Pagination,
   Chip,
   useMediaQuery,
@@ -22,19 +21,12 @@ import "../styles/MoviesPage.scss"
 // Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 }
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4 },
-  },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 }
 
 interface MoviesPageProps {
@@ -43,10 +35,9 @@ interface MoviesPageProps {
 
 export default function MoviesPage({ type }: MoviesPageProps) {
   const dispatch = useDispatch()
-  const { trending, popular, top_rated, loading, error } = useSelector(
+  const { trending, popular, top_rated, error } = useSelector(
     (state: any) => state.movies
   )
-
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
@@ -57,7 +48,7 @@ export default function MoviesPage({ type }: MoviesPageProps) {
 
   const paginatedTypes = ["popular", "top_rated", "upcoming", "nowPlaying"]
 
-  // Dynamic content based on type
+  // Dynamic page config
   const pageConfig = {
     trending: {
       title: "Trending Movies",
@@ -87,7 +78,6 @@ export default function MoviesPage({ type }: MoviesPageProps) {
   const totalPages = config.data?.totalPages || 0
 
   useEffect(() => {
-    // get movies whenever type or page changes
     dispatch<any>(config.action(currentPage))
   }, [dispatch, type, config.action, currentPage])
 
@@ -116,22 +106,6 @@ export default function MoviesPage({ type }: MoviesPageProps) {
     setCurrentPage(value)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
-
-  const renderLoadingSkeletons = () => (
-    <div className="movies-grid">
-      {Array.from({ length: 20 }).map((_, index) => (
-        <div key={index} className="loading-item">
-          <Skeleton
-            variant="rectangular"
-            height={300}
-            className="loading-skeleton"
-            data-testid="skeleton"
-          />
-          <Skeleton variant="text" height={24} className="loading-text" />
-        </div>
-      ))}
-    </div>
-  )
 
   return (
     <Box className="movies-page">
@@ -167,17 +141,7 @@ export default function MoviesPage({ type }: MoviesPageProps) {
 
         {/* Content */}
         <AnimatePresence mode="wait" key={type + currentPage}>
-          {loading ? (
-            <motion.div
-              key={`loading-${type}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="content-section"
-            >
-              {renderLoadingSkeletons()}
-            </motion.div>
-          ) : error ? (
+          {error ? (
             <motion.div
               key={`error-${type}`}
               initial={{ opacity: 0, y: 20 }}

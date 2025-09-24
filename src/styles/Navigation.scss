@@ -144,3 +144,29 @@
     }
   }
 }
+
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1300;
+  background-color: #1a1a1a !important;
+  color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  max-height: 300px;
+  overflow-y: auto;
+
+  .MuiListItemButton-root {
+    color: #ffffff;
+    &:hover {
+      background-color: rgba(139, 69, 197, 0.3);
+    }
+  }
+
+  .dropdown-text {
+    font-size: 0.95rem;
+    padding-left: 0.5rem;
+  }
+}

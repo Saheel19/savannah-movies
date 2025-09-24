@@ -12,6 +12,7 @@ export const movieService = {
   getMovieCredits,
   getMovieVideos,
   getSimilarMovies,
+  searchMovies,
 }
 
 /**
@@ -121,6 +122,21 @@ function getSimilarMovies(id: string) {
   return axios
     .get(`${baseUrl}/movie/${id}/similar`, {
       params: {
+        api_key: apiKey,
+      },
+    })
+    .then(handleResponse)
+}
+
+/**
+ * Handle search movies by query
+ * @param query
+ */
+function searchMovies(query: string) {
+  return axios
+    .get(`${baseUrl}/search/movie`, {
+      params: {
+        query,
         api_key: apiKey,
       },
     })
