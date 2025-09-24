@@ -24,6 +24,7 @@ import {
   ThumbUp as ThumbUpIcon,
 } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
+import { movieService } from "../pages/_services"
 import "../styles/MoviesModal.scss"
 
 interface MoviesModalProps {
@@ -32,6 +33,7 @@ interface MoviesModalProps {
   onClose: () => void
   favorites?: Set<number>
   onToggleFavorite?: (movieId: number) => void
+  autoPlayTrailer?: boolean
 }
 
 const MoviesModal = React.memo(
@@ -41,9 +43,18 @@ const MoviesModal = React.memo(
     onClose,
     favorites = new Set(),
     onToggleFavorite,
+    autoPlayTrailer = false,
   }: MoviesModalProps) => {
     const [isLoading, setIsLoading] = useState(true)
+    const [trailerKey, setTrailerKey] = useState<string | null>(null)
     const navigate = useNavigate()
+
+    // Reset trailerKey whenever modal closes
+    useEffect(() => {
+      if (!open) {
+        setTrailerKey(null)
+      }
+    }, [open])
 
     const posterUrl = useMemo(
       () =>
@@ -60,6 +71,7 @@ const MoviesModal = React.memo(
       [movie, posterUrl]
     )
 
+    // Preload images
     useEffect(() => {
       if (!movie || !open) {
         setIsLoading(false)
@@ -86,9 +98,17 @@ const MoviesModal = React.memo(
       return () => clearTimeout(timeoutId)
     }, [movie, posterUrl, backdropUrl, open])
 
+    // Auto play trailer when opening
+    useEffect(() => {
+      if (autoPlayTrailer && movie && open) {
+        handleTrailerClick()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [autoPlayTrailer, movie, open])
+
     const handleFavoriteClick = useCallback(() => {
-      if (onToggleFavorite) onToggleFavorite(movie.id)
-    }, [onToggleFavorite, movie?.id])
+      if (onToggleFavorite && movie) onToggleFavorite(movie.id)
+    }, [onToggleFavorite, movie])
 
     const formatDate = useCallback((dateString: string) => {
       if (!dateString) return "N/A"
@@ -99,12 +119,31 @@ const MoviesModal = React.memo(
       })
     }, [])
 
+    const handleTrailerClick = useCallback(async () => {
+      if (!movie) return
+      try {
+        const data = await movieService.getMovieVideos(movie.id)
+        const trailer =
+          data.results.find(
+            (vid: any) => vid.type === "Trailer" && vid.site === "YouTube"
+          ) || data.results.find((vid: any) => vid.site === "YouTube")
+        if (trailer) setTrailerKey(trailer.key)
+      } catch (err) {
+        console.error("Error geting trailer:", err)
+      }
+    }, [movie])
+
+    const handleBackToDetails = useCallback(() => {
+      setTrailerKey(null)
+    }, [])
+
     if (!movie || !open) return null
 
     const isFavorite = favorites.has(movie.id)
 
     return (
       <>
+        {/* Backdrop */}
         <div
           className="modal-backdrop"
           style={{
@@ -148,6 +187,7 @@ const MoviesModal = React.memo(
               PaperProps={{ className: "modal-paper" }}
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Header */}
               <Box className="modal-header">
                 <div className="backdrop-container">
                   <img
@@ -198,150 +238,176 @@ const MoviesModal = React.memo(
                 </DialogTitle>
               </Box>
 
+              {/* Trailer OR Movie Details */}
               <DialogContent className="modal-content">
-                <Box className="content-layout">
-                  <Box className="poster-section">
-                    <div className="poster-container">
-                      <img
-                        src={posterUrl}
-                        alt={movie.title}
-                        className="poster-image"
-                        loading="lazy"
-                      />
-                    </div>
+                {trailerKey ? (
+                  <Box className="trailer-container">
+                    <iframe
+                      width="100%"
+                      height="500"
+                      src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1`}
+                      title="Movie Trailer"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
                   </Box>
-
-                  <Box className="details-section">
-                    <Box className="info-grid">
-                      <Box className="info-item">
-                        <CalendarIcon className="info-icon" />
-                        <Box>
-                          <Typography variant="body2" className="info-label">
-                            Release Date
-                          </Typography>
-                          <Typography variant="body1" className="info-value">
-                            {formatDate(movie.release_date)}
-                          </Typography>
-                        </Box>
-                      </Box>
-
-                      <Box className="info-item">
-                        <LanguageIcon className="info-icon" />
-                        <Box>
-                          <Typography variant="body2" className="info-label">
-                            Language
-                          </Typography>
-                          <Typography variant="body1" className="info-value">
-                            {movie.original_language?.toUpperCase() || "N/A"}
-                          </Typography>
-                        </Box>
-                      </Box>
-
-                      <Box className="info-item">
-                        <ViewIcon className="info-icon" />
-                        <Box>
-                          <Typography variant="body2" className="info-label">
-                            Popularity
-                          </Typography>
-                          <Typography variant="body1" className="info-value">
-                            {Math.round(movie.popularity || 0)}
-                          </Typography>
-                        </Box>
-                      </Box>
-
-                      <Box className="info-item">
-                        <ThumbUpIcon className="info-icon" />
-                        <Box>
-                          <Typography variant="body2" className="info-label">
-                            Votes
-                          </Typography>
-                          <Typography variant="body1" className="info-value">
-                            {movie.vote_count?.toLocaleString() || "N/A"}
-                          </Typography>
-                        </Box>
-                      </Box>
+                ) : (
+                  <Box className="content-layout">
+                    <Box className="poster-section">
+                      <div className="poster-container">
+                        <img
+                          src={posterUrl}
+                          alt={movie.title}
+                          className="poster-image"
+                          loading="lazy"
+                        />
+                      </div>
                     </Box>
 
-                    <Box className="overview-section">
-                      <Typography variant="h6" className="section-title">
-                        Overview
-                      </Typography>
-                      <Typography variant="body1" className="overview-text">
-                        {movie.overview || "No overview available."}
-                      </Typography>
-                    </Box>
+                    <Box className="details-section">
+                      <Box className="info-grid">
+                        <Box className="info-item">
+                          <CalendarIcon className="info-icon" />
+                          <Box>
+                            <Typography variant="body2" className="info-label">
+                              Release Date
+                            </Typography>
+                            <Typography variant="body1" className="info-value">
+                              {formatDate(movie.release_date)}
+                            </Typography>
+                          </Box>
+                        </Box>
 
-                    <Box className="chips-section">
-                      <div className="chip-container">
-                        <Chip
-                          label={`★ ${movie.vote_average?.toFixed(1) || "N/A"}`}
-                          className="rating-chip"
-                        />
-                      </div>
+                        <Box className="info-item">
+                          <LanguageIcon className="info-icon" />
+                          <Box>
+                            <Typography variant="body2" className="info-label">
+                              Language
+                            </Typography>
+                            <Typography variant="body1" className="info-value">
+                              {movie.original_language?.toUpperCase() || "N/A"}
+                            </Typography>
+                          </Box>
+                        </Box>
 
-                      <div className="chip-container">
-                        <Chip
-                          label={`${movie.vote_count?.toLocaleString() || "0"} votes`}
-                          className="votes-chip"
-                        />
-                      </div>
+                        <Box className="info-item">
+                          <ViewIcon className="info-icon" />
+                          <Box>
+                            <Typography variant="body2" className="info-label">
+                              Popularity
+                            </Typography>
+                            <Typography variant="body1" className="info-value">
+                              {Math.round(movie.popularity || 0)}
+                            </Typography>
+                          </Box>
+                        </Box>
 
-                      <div className="chip-container">
-                        <Chip
-                          label={`Popularity: ${Math.round(movie.popularity || 0)}`}
-                          className="popularity-chip"
-                        />
-                      </div>
+                        <Box className="info-item">
+                          <ThumbUpIcon className="info-icon" />
+                          <Box>
+                            <Typography variant="body2" className="info-label">
+                              Votes
+                            </Typography>
+                            <Typography variant="body1" className="info-value">
+                              {movie.vote_count?.toLocaleString() || "N/A"}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
 
-                      {movie.adult && (
+                      <Box className="overview-section">
+                        <Typography variant="h6" className="section-title">
+                          Overview
+                        </Typography>
+                        <Typography variant="body1" className="overview-text">
+                          {movie.overview || "No overview available."}
+                        </Typography>
+                      </Box>
+
+                      <Box className="chips-section">
                         <div className="chip-container">
-                          <Chip label="18+" className="adult-chip" />
+                          <Chip
+                            label={`★ ${movie.vote_average?.toFixed(1) || "N/A"}`}
+                            className="rating-chip"
+                          />
                         </div>
-                      )}
+
+                        <div className="chip-container">
+                          <Chip
+                            label={`${movie.vote_count?.toLocaleString() || "0"} votes`}
+                            className="votes-chip"
+                          />
+                        </div>
+
+                        <div className="chip-container">
+                          <Chip
+                            label={`Popularity: ${Math.round(movie.popularity || 0)}`}
+                            className="popularity-chip"
+                          />
+                        </div>
+
+                        {movie.adult && (
+                          <div className="chip-container">
+                            <Chip label="18+" className="adult-chip" />
+                          </div>
+                        )}
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
+                )}
               </DialogContent>
 
+              {/* Actions */}
               <DialogActions className="modal-actions">
-                <div className="actions-container">
-                  <Button
-                    onClick={() => {
-                      onClose()
-                      navigate(`/movies/${movie.id}`)
-                    }}
-                    variant="outlined"
-                    className="action-button secondary"
-                  >
-                    Show More
-                  </Button>
-
-                  {onToggleFavorite && (
+                {trailerKey ? (
+                  <div className="actions-container">
                     <Button
-                      onClick={handleFavoriteClick}
+                      className="action-button secondary"
                       variant="outlined"
-                      startIcon={
-                        isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />
-                      }
-                      className={`action-button favorite ${isFavorite ? "favorited" : ""}`}
+                      onClick={handleBackToDetails}
                     >
-                      {isFavorite
-                        ? "Remove from Favorites"
-                        : "Add to Favorites"}
+                      Back to Details
                     </Button>
-                  )}
+                  </div>
+                ) : (
+                  <div className="actions-container">
+                    <Button
+                      onClick={() => {
+                        onClose()
+                        navigate(`/movies/${movie.id}`)
+                      }}
+                      variant="outlined"
+                      className="action-button secondary"
+                    >
+                      Show More
+                    </Button>
 
-                  <Button
-                    variant="contained"
-                    startIcon={<PlayIcon />}
-                    className="action-button primary"
-                    onClick={() => {
-                      console.log("Opening trailer for:", movie.title)
-                    }}
-                  >
-                    Watch Trailer
-                  </Button>
-                </div>
+                    {onToggleFavorite && (
+                      <Button
+                        onClick={handleFavoriteClick}
+                        variant="outlined"
+                        startIcon={
+                          isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />
+                        }
+                        className={`action-button favorite ${isFavorite ? "favorited" : ""}`}
+                      >
+                        {isFavorite
+                          ? "Remove from Favorites"
+                          : "Add to Favorites"}
+                      </Button>
+                    )}
+
+                    <Button
+                      variant="contained"
+                      startIcon={<PlayIcon />}
+                      className="action-button primary"
+                      onClick={handleTrailerClick}
+                    >
+                      Watch Trailer
+                    </Button>
+                  </div>
+                )}
               </DialogActions>
             </Dialog>
           )}

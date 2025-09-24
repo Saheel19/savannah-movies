@@ -1,14 +1,16 @@
 import { JSX, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { movieActions } from "./_actions"
-import { Box, Typography, Container, Skeleton } from "@mui/material"
+import { Box, Typography, Container, Skeleton, Button } from "@mui/material"
 import MovieIcon from "@mui/icons-material/Movie"
 import TrendingUpIcon from "@mui/icons-material/TrendingUp"
-import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import MovieCard from "../components/MovieCard"
 import MoviesModal from "../components/MoviesModal"
+import { RootState } from "store/store"
 
 import "../styles/Home.scss"
 
@@ -32,8 +34,9 @@ const cardVariants = {
 
 export default function Home() {
   const dispatch = useDispatch()
-  const { trending, popular, loading } = useSelector(
-    (state: any) => state.movies
+  const navigate = useNavigate()
+  const { trending, popular, top_rated, loading } = useSelector(
+    (state: RootState) => state.movies
   )
 
   const [favorites, setFavorites] = useState<Set<number>>(new Set())
@@ -41,20 +44,23 @@ export default function Home() {
   const [modalOpen, setModalOpen] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
 
-  // Hero slider auto-play
+  // Hero slider auto-play (only first 5 popular movies)
   useEffect(() => {
     if (typeof window === "undefined") return
-    if (popular && popular.length > 0) {
+    if (popular.movies && popular.movies.length > 0) {
       const interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % Math.min(popular.length, 5))
+        setCurrentSlide(
+          (prev) => (prev + 1) % Math.min(popular.movies.length, 5)
+        )
       }, 5000)
       return () => clearInterval(interval)
     }
-  }, [popular])
+  }, [popular.movies])
 
   useEffect(() => {
     dispatch<any>(movieActions.getTrendingMovies())
     dispatch<any>(movieActions.getPopularMovies())
+    dispatch<any>(movieActions.getTopRated())
   }, [dispatch])
 
   const handleToggleFavorite = (movieId: number) => {
@@ -75,6 +81,10 @@ export default function Home() {
     setModalOpen(false)
   }
 
+  const handleShowMore = (type: "trending" | "popular" | "top_rated") => {
+    navigate(`/movies/${type}`)
+  }
+
   const getImageUrl = (path: string) => {
     return path
       ? `https://image.tmdb.org/t/p/original${path}`
@@ -87,8 +97,8 @@ export default function Home() {
 
   // ---------------- HERO SLIDER ----------------
   const renderHeroSlider = () => {
-    if (!popular || popular.length === 0) return null
-    const slidesToShow = popular.slice(0, 5)
+    if (!popular.movies || popular.movies.length === 0) return null
+    const slidesToShow = popular.movies.slice(0, 5)
 
     return (
       <div className="hero-slider-section">
@@ -104,7 +114,7 @@ export default function Home() {
               <div
                 className="slide-background"
                 style={{
-                  backgroundImage: `url(${getImageUrl(movie.poster_path)})`,
+                  backgroundImage: `url(${getImageUrl(movie.backdrop_path)})`,
                 }}
               >
                 <motion.div
@@ -135,14 +145,6 @@ export default function Home() {
                   </div>
 
                   <div className="action-buttons">
-                    <motion.button
-                      className="watch-btn"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <PlayArrowIcon sx={{ marginRight: 1 }} />
-                      Watch Trailer
-                    </motion.button>
                     <motion.button
                       className="info-btn"
                       onClick={() => handleMovieClick(movie)}
@@ -175,12 +177,33 @@ export default function Home() {
   }
 
   // ---------------- MOVIE SECTIONS ----------------
-  const renderSection = (title: string, icon: JSX.Element, movies: any[]) => {
+  const renderSection = (
+    title: string,
+    icon: JSX.Element,
+    movies: any[],
+    type: "trending" | "popular" | "top_rated"
+  ) => {
     return (
       <Container className="section-container">
         <Box className="section-header">
-          {icon}
-          <Typography className="section-title">{title}</Typography>
+          <Box className="section-header-left">
+            {icon}
+            <Typography className="section-title">{title}</Typography>
+          </Box>
+
+          <motion.div
+            className="show-more-btn-container"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button
+              className="show-more-btn"
+              onClick={() => handleShowMore(type)}
+              endIcon={<ArrowForwardIcon />}
+            >
+              Show More
+            </Button>
+          </motion.div>
         </Box>
 
         <AnimatePresence mode="wait">
@@ -234,15 +257,24 @@ export default function Home() {
       {renderHeroSlider()}
 
       {renderSection(
-        "Trending This Week",
-        <TrendingUpIcon sx={{ color: "#ffffff", fontSize: "1.5rem" }} />,
-        trending
+        "Popular Movies",
+        <MovieIcon sx={{ color: "#ffffff", fontSize: "1.5rem" }} />,
+        popular.movies.slice(5),
+        "popular"
       )}
 
       {renderSection(
-        "Popular Movies",
-        <MovieIcon sx={{ color: "#ffffff", fontSize: "1.5rem" }} />,
-        popular?.slice(5) || []
+        "Top Rated Movies",
+        <MovieIcon sx={{ color: "#ffd700", fontSize: "1.5rem" }} />,
+        top_rated.movies.slice(0),
+        "top_rated"
+      )}
+
+      {renderSection(
+        "Trending This Week",
+        <TrendingUpIcon sx={{ color: "#ffffff", fontSize: "1.5rem" }} />,
+        trending.movies,
+        "trending"
       )}
 
       <MoviesModal

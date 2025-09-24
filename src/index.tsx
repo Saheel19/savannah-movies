@@ -1,9 +1,8 @@
-// src/index.tsx
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { Provider } from "react-redux"
 import App from "./pages/App"
-import { store } from "./_helpers/store" // adjust if your store path is different
+import { store } from "./store/store"
 import reportWebVitals from "./reportWebVitals"
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement)

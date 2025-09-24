@@ -380,8 +380,12 @@
           border-color: rgba(255, 255, 255, 0.25) !important;
           color: #ffffff !important;
           background: transparent !important;
-        }
 
+          &:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(255, 255, 255, 0.5) !important;
+          }
+        }
         &.favorite {
           border-color: rgba(244, 67, 54, 0.4) !important;
           color: #f44336 !important;
@@ -396,7 +400,13 @@
         &.primary {
           background: linear-gradient(135deg, #bb86fc, #9c27b0) !important;
           border: none !important;
-          color: #000000 !important;
+          color: #ffffff !important;
+
+          &:hover {
+            background: linear-gradient(135deg, #9c27b0, #bb86fc) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+          }
         }
       }
     }
