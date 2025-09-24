@@ -1,15 +1,14 @@
-// __tests__/firebase.spec.ts
-import { auth } from "../firebase/firebase"
 import { signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from "../firebase/firebase"
 
-// Mock only signInWithEmailAndPassword
-jest.mock("firebase/auth", () => {
-  const originalModule = jest.requireActual("firebase/auth")
-  return {
-    ...originalModule,
-    signInWithEmailAndPassword: jest.fn(),
-  }
-})
+jest.mock("../firebase/firebase", () => ({
+  auth: {},
+}))
+
+// Mock signInWithEmailAndPassword separately
+jest.mock("firebase/auth", () => ({
+  signInWithEmailAndPassword: jest.fn(),
+}))
 
 describe("Firebase Authentication", () => {
   it("should initialize auth", () => {
@@ -21,7 +20,6 @@ describe("Firebase Authentication", () => {
     const mockPassword = "password123"
     const mockUserCredential = { user: { uid: "123" } }
 
-    // Mock implementation
     ;(signInWithEmailAndPassword as jest.Mock).mockResolvedValue(
       mockUserCredential
     )
