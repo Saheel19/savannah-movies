@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBMCnveNMJ6Knnot-G_YQVcI0lhx5QIwtA",
-  authDomain: "savannah-movies-8df36.firebaseapp.com",
-  projectId: "savannah-movies-8df36",
-  storageBucket: "savannah-movies-8df36.firebasestorage.app",
-  messagingSenderId: "762629172165",
-  appId: "1:762629172165:web:e775daf270bd9c43fdf9ac",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 }
 
 // Initialize Firebase
