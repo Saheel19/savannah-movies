@@ -1,0 +1,8 @@
+html,
+body,
+#root,
+.app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #16213e 100%);
+  color: #ffffff; // optional if you want global text color
+}
